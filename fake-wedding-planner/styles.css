@@ -1,0 +1,704 @@
+/* --- UNIVERSAL STATE REFINEMENTS & BRAND TOKENS --- */
+:root {
+    --bg-dark: #0d1f17;          /* Deep Forest Black-Green */
+    --surface-green: #122a1e;    /* Elevated Surface Container Green */
+    --text-parchment: #f5edd6;   /* Warm Editorial Light Text */
+    --accent-gold: #c9a84c;      /* Legacy High Contrast Gold Matrix */
+    --emerald-border: #2d6a4f;   /* Mid Structural Emerald Split Vector */
+    --emerald-hover: #52b788;   /* Bright Highlight Feedback Node */
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-dark);
+    color: var(--text-parchment);
+    font-family: var(--font-body);
+}
+
+body {
+    overflow-x: hidden;
+    cursor: none;
+}
+
+/* --- HARDWARE ACCELERATED LERP CURSOR SYSTEM --- */
+.custom-cursor {
+    width: 10px;
+    height: 10px;
+    background-color: var(--accent-gold);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+    transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                height 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                background-color 0.3s ease;
+}
+
+.custom-cursor.cursor-hover {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(201, 168, 76, 0.1);
+    border: 1px solid var(--accent-gold);
+}
+
+@media (pointer: coarse) {
+    .custom-cursor, .scratchstart-watermark { display: none; }
+    body { cursor: auto; }
+}
+
+/* --- AGENCY PRODUCTION WATERMARK --- */
+.scratchstart-watermark {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 9999;
+    background-color: rgba(13, 31, 23, 0.85);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    padding: 8px 14px;
+    border-radius: 2px;
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: rgba(245, 237, 214, 0.7);
+    backdrop-filter: blur(6px);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.scratchstart-watermark strong {
+    color: var(--accent-gold);
+    margin-left: 2px;
+}
+
+.scratchstart-watermark:hover {
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+}
+
+/* --- 1. FULL VIEWPORT HERO (Using hero-bg.jpg) --- */
+.hero {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-image: url('hero-bg.jpg');
+    background-size: cover;
+    background-position: center 30%;
+    overflow: hidden;
+}
+
+.hero-bg-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(13, 31, 23, 0.78);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 20px;
+    max-width: 900px;
+}
+
+.hero-label {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    color: var(--accent-gold);
+    opacity: 0;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: 6.5rem;
+    font-weight: 400;
+    line-height: 1.1;
+    margin: 1rem 0;
+    opacity: 0;
+    transform: translate3d(0, 50px, 0);
+}
+
+.hero-tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--accent-gold);
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+}
+
+.hero-rule {
+    width: 80px;
+    height: 1px;
+    background-color: var(--accent-gold);
+    margin: 2rem auto;
+    transform: scaleX(0);
+    transform-origin: center;
+}
+
+.hero-cta-btn {
+    display: inline-block;
+    padding: 16px 40px;
+    background-color: transparent;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    font-weight: 500;
+    border-radius: 2px;
+    opacity: 0;
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.hero-cta-btn:hover {
+    background-color: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+/* --- ANIMATION SEQUENCE INJECTIONS --- */
+.app-ready .hero-label {
+    animation: simpleFadeIn 0.8s forwards 0.3s;
+}
+.app-ready .hero-title {
+    animation: translateReveal 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.6s;
+}
+.app-ready .hero-tagline {
+    animation: translateReveal 1s cubic-bezier(0.25, 1, 0.5, 1) forwards 1s;
+}
+.app-ready .hero-rule {
+    animation: ruleExpand 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards 1.3s;
+}
+.app-ready .hero-cta-btn {
+    animation: simpleFadeIn 0.8s forwards 1.5s;
+}
+
+@keyframes simpleFadeIn { to { opacity: 1; } }
+@keyframes translateReveal { to { opacity: 1; transform: translate3d(0,0,0); } }
+@keyframes ruleExpand { to { transform: scaleX(1); } }
+
+/* --- 2. GOLD STRIP MARQUEE RUNNER --- */
+.gold-marquee-container {
+    width: 100vw;
+    overflow: hidden;
+    background-color: var(--accent-gold);
+    padding: 20px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.gold-marquee-container .marquee-track span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.6rem;
+    color: var(--bg-dark);
+    letter-spacing: 1px;
+}
+
+@keyframes continuousMarqueeLoop {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+}
+
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: continuousMarqueeLoop 24s linear infinite;
+}
+
+/* --- 3. ABOUT SPLIT CONTEXT WITH BACKDROP DATA --- */
+.about-section {
+    padding: 160px 8%;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.about-left-col {
+    position: relative;
+    opacity: 0;
+    transform: translate3d(-50px, 0, 0);
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease;
+}
+
+.massive-num-bg {
+    font-family: var(--font-display);
+    font-size: 20rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    opacity: 0.04;
+    position: absolute;
+    top: -140px;
+    left: -20px;
+    line-height: 1;
+    z-index: 1;
+    user-select: none;
+}
+
+.section-mini-caps {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent-gold);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.about-narrative {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1.5;
+    font-weight: 300;
+    position: relative;
+    z-index: 2;
+}
+
+.about-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    opacity: 0;
+    transform: translate3d(50px, 0, 0);
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease;
+}
+
+.stat-block {
+    padding-left: 30px;
+    border-left: 2px solid var(--accent-gold);
+}
+
+.stat-block h3 {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    color: var(--text-parchment);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 4px;
+}
+
+.stat-block p {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(245, 237, 214, 0.6);
+}
+
+/* Observer State Toggles */
+.is-revealed .about-left-col,
+.is-revealed .about-right-col {
+    opacity: 1;
+    transform: translate3d(0,0,0);
+}
+
+/* --- 4. SERVICES PACKAGE BLOCK --- */
+.services-section {
+    padding: 120px 8%;
+    background-color: rgba(18, 42, 30, 0.3);
+}
+
+.section-header-centered {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.section-header-centered h2 {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    font-weight: 400;
+    margin-top: 0.5rem;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.service-card {
+    height: 520px;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
+    border: 1px solid var(--emerald-border);
+    border-radius: 2px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+                opacity 0.6s ease,
+                border-color 0.4s ease;
+}
+
+.is-revealed .service-card:nth-child(1) { opacity: 1; transform: translate3d(0,0,0); transition-delay: 0ms; }
+.is-revealed .service-card:nth-child(2) { opacity: 1; transform: translate3d(0,0,0); transition-delay: 200ms; }
+.is-revealed .service-card:nth-child(3) { opacity: 1; transform: translate3d(0,0,0); transition-delay: 400ms; }
+
+.service-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(13, 31, 23, 0.75);
+    z-index: 1;
+    transition: background-color 0.4s ease;
+}
+
+.service-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    transform: translate3d(0, 15px, 0);
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.service-content h3 {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+}
+
+.service-price {
+    display: block;
+    color: var(--accent-gold);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.service-book-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background-color: transparent;
+    border: 1px solid rgba(245, 237, 214, 0.3);
+    color: var(--text-parchment);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.4s ease, border-color 0.4s ease, background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Service Card Hover States */
+.service-card:hover {
+    border-color: var(--emerald-hover);
+}
+.service-card:hover .service-overlay {
+    background-color: rgba(13, 31, 23, 0.4);
+}
+.service-card:hover .service-content {
+    transform: translate3d(0, 0, 0);
+}
+.service-card:hover .service-book-btn {
+    opacity: 1;
+    border-color: var(--accent-gold);
+    background-color: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+/* --- 5. GALLERY PINTEREST MASONRY MODULE --- */
+.gallery-section {
+    padding: 140px 8%;
+}
+
+.masonry-grid {
+    columns: 3;
+    column-gap: 24px;
+    opacity: 0;
+    transform: translate3d(0, 50px, 0);
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease;
+}
+
+.is-revealed .masonry-grid,
+.is-revealed.masonry-grid {
+    opacity: 1;
+    transform: translate3d(0,0,0);
+}
+
+.masonry-item {
+    break-inside: avoid;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: border-color 0.4s ease;
+}
+
+.masonry-item img {
+    width: 100%;
+    height: auto; 
+    object-fit: cover;
+    display: block;
+    opacity: 1 !important;
+}
+
+/* Gallery Interaction states */
+.masonry-item:hover {
+    border-color: var(--accent-gold);
+}
+.masonry-item:hover img {
+    transform: scale(1.03);
+    filter: brightness(1.05);
+}
+
+/* --- 6. TESTIMONIAL CINEMATIC SCREEN SCROLL --- */
+.testimonial-section {
+    padding: 160px 8%;
+    background-color: var(--surface-green);
+    text-align: center;
+    overflow: hidden;
+}
+
+.cinematic-quote-container {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.decorative-quote-mark {
+    font-family: var(--font-display);
+    font-size: 10rem;
+    color: var(--accent-gold);
+    opacity: 0;
+    line-height: 1;
+    height: 60px;
+    margin-bottom: -20px;
+    transform: scale(0.6);
+    transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.main-cinematic-quote {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2.4rem;
+    line-height: 1.5;
+    color: var(--text-parchment);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+    transition: opacity 1s ease 0.3s, transform 1s cubic-bezier(0.25, 1, 0.5, 1) 0.3s;
+}
+
+.quote-author {
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent-gold);
+    opacity: 0;
+    transition: opacity 0.8s ease 0.6s;
+}
+
+.is-revealed .decorative-quote-mark { opacity: 0.15; transform: scale(1); }
+.is-revealed .main-cinematic-quote { opacity: 1; transform: translate3d(0,0,0); }
+.is-revealed .quote-author { opacity: 1; }
+
+/* --- 7. CONTACT GRID & EMERALD FOCUS MATRICES --- */
+.contact-section {
+    padding: 140px 8%;
+    background-color: var(--bg-dark);
+    border-top: 1px solid var(--surface-green);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 100px;
+}
+
+.contact-details-side h2 {
+    font-family: var(--font-display);
+    font-size: 3.8rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+}
+
+.contact-intro {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: rgba(245, 237, 214, 0.7);
+    margin-bottom: 3rem;
+    font-weight: 300;
+}
+
+.contact-vectors {
+    margin-bottom: 4rem;
+}
+
+.contact-vectors p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: rgba(245, 237, 214, 0.8);
+}
+
+.contact-vectors strong {
+    color: var(--accent-gold);
+    font-weight: 500;
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.whatsapp-gold-btn {
+    display: inline-block;
+    padding: 16px 36px;
+    background-color: var(--accent-gold);
+    color: var(--bg-dark);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    font-weight: 600;
+    border-radius: 2px;
+    transition: opacity 0.3s ease;
+}
+
+.whatsapp-gold-btn:hover {
+    opacity: 0.9;
+}
+
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-gold);
+    margin-bottom: 0.6rem;
+}
+
+.form-group input,
+.form-group input[type="date"],
+.form-group textarea {
+    width: 100%;
+    background-color: var(--surface-green);
+    border: 1px solid var(--emerald-border);
+    padding: 14px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text-parchment);
+    border-radius: 2px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Date indicator adjustments */
+::-webkit-calendar-picker-indicator {
+    filter: invert(93%) sepia(18%) saturate(350%) hue-rotate(321deg) brightness(101%) contrast(92%);
+    cursor: pointer;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.15);
+}
+
+.submit-gold-btn {
+    width: 100%;
+    padding: 18px 0;
+    background-color: var(--accent-gold);
+    color: var(--bg-dark);
+    border: none;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.submit-gold-btn:hover {
+    opacity: 0.95;
+}
+
+.success-message {
+    display: none;
+    background-color: var(--surface-green);
+    border: 1px solid var(--accent-gold);
+    padding: 40px;
+    text-align: center;
+    border-radius: 2px;
+}
+
+.success-message h3 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--accent-gold);
+    margin-bottom: 0.8rem;
+    font-weight: 400;
+}
+
+.success-message p {
+    color: rgba(245, 237, 214, 0.8);
+    font-size: 1rem;
+}
+
+/* --- PORTFOLIO CTA FOOTER --- */
+.production-footer {
+    padding: 80px 8%;
+    border-top: 1px solid var(--surface-green);
+    background: #0a1711;
+    text-align: center;
+}
+
+.footer-cta-anchor {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--text-parchment);
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    padding-bottom: 8px;
+    transition: color 0.3s ease;
+}
+
+.footer-cta-anchor::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 40px; height: 1px;
+    background-color: var(--accent-gold);
+    transform: translateX(-50%);
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.footer-cta-anchor:hover {
+    color: var(--accent-gold);
+}
+
+.footer-cta-anchor:hover::after {
+    width: 100%;
+}
